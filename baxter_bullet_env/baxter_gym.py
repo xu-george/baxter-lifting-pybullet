@@ -19,7 +19,7 @@ parentdir = os.path.dirname(os.path.dirname(currentdir))
 os.sys.path.insert(0, parentdir)
 
 pb_path = pybullet_data.getDataPath()
-baxter_path = os.getcwd() + "/baxter_bullet_env/models/baxter_description/urdf/paddle_gripper.urdf"
+baxter_path = os.getcwd() + "/baxter_bullet_env/models/baxter_description/urdf/baxter.urdf"
 table_path = os.getcwd() + "/baxter_bullet_env/models/objects/table/table.urdf"
 block_path = os.getcwd() + "/baxter_bullet_env/models/objects/block/model.urdf"
 wall_path = os.getcwd() + "/baxter_bullet_env/models/objects/block/black_wall.urdf"

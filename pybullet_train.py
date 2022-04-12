@@ -9,13 +9,14 @@ from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory
 
 from baxter_bullet_env.baxter_gym import BaxterGymEnv
+from util import FrameStack
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
     # --------------------environment ---------------------
     parser.add_argument('--env-name', default='BaxterPaddleGrasp_auto_gamma_0.99')
-    parser.add_argument('--epoch_step', default=100)
+    parser.add_argument('--epoch_step', default=200)
 
     # -------------------sac agent -------------------------
     parser.add_argument('--end_epoch', type=int, default=1e4)
@@ -65,8 +66,8 @@ if __name__ == "__main__":
     # ------------------------load controllers
 
     # using dense reward, and physic state to train
-    env = BaxterGymEnv(renders=True, camera_view=False,
-                       pygame_renders=False, max_episode_steps=args.epoch_step)
+    env = FrameStack(BaxterGymEnv(renders=True, camera_view=False,
+                                  pygame_renders=False, max_episode_steps=args.epoch_step), 3)
 
     env.seed(args.seed)
     env.action_space.seed(args.seed)
@@ -123,7 +124,7 @@ if __name__ == "__main__":
 
             # Ignore the "done" signal if it comes from hitting the time horizon.
             # (https://github.com/openai/spinningup/blob/master/spinup/algos/sac/sac.py)
-            mask = 1 if episode_steps == env._max_episode_steps else float(not done)
+            mask = 1 if episode_steps == env.max_episode_steps else float(not done)
 
             memory.push(state, action, reward, next_state, mask)    # Append transition to memory
 

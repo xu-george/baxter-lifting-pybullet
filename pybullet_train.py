@@ -96,7 +96,7 @@ if __name__ == "__main__":
         done = False
         state = env.reset()
 
-        while episode_steps < args.epoch_step and not done:
+        while not done:
             
             if args.start_steps > total_numsteps:
                 action = env.action_space.sample()  # Sample random action

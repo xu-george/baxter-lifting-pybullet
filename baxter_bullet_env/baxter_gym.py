@@ -59,7 +59,7 @@ class BaxterGymEnv(gym.Env):
         self.v_gripper = 1  # need at least 1 steps to close
 
         self._envStepCounter = 0
-        self._max_episode_steps = max_episode_steps
+        self.max_episode_steps = max_episode_steps
         self._renders = renders
         self._pygame_render = pygame_renders
         self._width = RENDER_HEIGHT
@@ -231,16 +231,16 @@ class BaxterGymEnv(gym.Env):
         cube_v, _ = p.getBaseVelocity(self.blockUid)
 
         # get joint state -- normalized to [0, 1]
-        gripper_state = p.getJointState(self.baxterId, motor_id[-1])[0] / self.robot.gripper_open
+        gripper_state = (joint_states[-1][0] / self.robot.gripper_open - 0.5) * 2
         dist = np.linalg.norm(np.array(gripper_state) - np.array(cube_pose))
-        physic_state = np.concatenate((joint_cos_p, end_effector_p, end_effector_v, cube_pose, cube_v,
-                                       cube_orn, [dist]), axis=0)
-
+        physic_state = np.concatenate((end_effector_p, cube_pose, [gripper_state],
+                                       [dist]), axis=0)
         return physic_state
     # ---------------------------------------------------------------------------------------------------
 
     def step(self, action):
         # take the action
+        self._envStepCounter += 1
         d_pose = action[0:3] * self.v_end
         self.robot.osc(d_pose)
 
@@ -255,22 +255,22 @@ class BaxterGymEnv(gym.Env):
         # update obs
         obs = self.getObservation()
         # update termination
-        done = self._envStepCounter >= self._max_episode_steps  # or self._success()
+        done = self._envStepCounter >= self.max_episode_steps  # or self._success()
         # update reward
-        reward = self._reward(action)
+        reward = self._reward()
         # update info
+        info = {}
         if self._success():
-            info = "success"
+            info["success"] = "True"
         else:
-            info = ""
-
+            info["success"] = "False"
         return obs, reward, done, info
 
     def _success(self):
         cube_pose, _ = p.getBasePositionAndOrientation(self.blockUid)
         return cube_pose[2] - self.cube_init_z > 0.05
 
-    def _reward(self, action):
+    def _reward(self):
         reward = 0
 
         # lift reward

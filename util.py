@@ -1,5 +1,8 @@
 import math
 import torch
+from collections import deque
+import gym
+import numpy as np
 
 
 def create_log_gaussian(mean, log_std, t):
@@ -29,3 +32,36 @@ def soft_update(target, source, tau):
 def hard_update(target, source):
     for target_param, param in zip(target.parameters(), source.parameters()):
         target_param.data.copy_(param.data)
+
+class FrameStack(gym.Wrapper):
+    """Stack n_frames last frames.
+    :param gym.Env env: the environment to wrap.
+    :param int n_frames: the number of frames to stack.
+    """
+
+    def __init__(self, env, n_frames):
+        super().__init__(env)
+        self.n_frames = n_frames
+        self.frames = deque([], maxlen=n_frames)
+        shape = [n_frames*i for i in list(env.observation_space.shape)]
+        self.observation_space = gym.spaces.Box(
+            low=np.min(env.observation_space.low),
+            high=np.max(env.observation_space.high),
+            shape=shape,
+            dtype=env.observation_space.dtype
+        )
+
+    def reset(self):
+        obs = self.env.reset()
+        for _ in range(self.n_frames):
+            self.frames.append(obs)
+        return self._get_ob()
+
+    def step(self, action):
+        obs, reward, done, info = self.env.step(action)
+        self.frames.append(obs)
+        return self._get_ob(), reward, done, info
+
+    def _get_ob(self):
+        obs = np.stack(self.frames, axis=0)
+        return obs.reshape([1, -1])[0]

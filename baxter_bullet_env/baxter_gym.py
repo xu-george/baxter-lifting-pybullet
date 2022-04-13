@@ -134,7 +134,7 @@ class BaxterGymEnv(gym.Env):
 
         self.blockUid = p.loadURDF(block_path, obj_pose, obj_orn)
 
-        p.changeDynamics(self.blockUid, -1, lateralFriction=1.3, spinningFriction=0.001, rollingFriction=0.0005,
+        p.changeDynamics(self.blockUid, -1, lateralFriction=1, spinningFriction=0.001, rollingFriction=0.0005,
                          restitution=0)
         p.changeDynamics(self.table_id, -1, lateralFriction=1, restitution=0)
 

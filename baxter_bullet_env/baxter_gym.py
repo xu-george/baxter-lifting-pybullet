@@ -274,10 +274,10 @@ class BaxterGymEnv(gym.Env):
         return cube_pose[2] - self.cube_init_z > 0.1
 
     def _reward(self):
-        reward = 0
+        reward = -0.1
 
         if self._success():
-            reward = 20
+            reward = 30
 
         if self._reward_types == "dense":
 

@@ -163,7 +163,7 @@ if __name__ == "__main__":
             if avg_reward > best_avg_reward:
                 best_avg_reward = avg_reward
                 agent.save_checkpoint(args.env_name)
-                torch.save(agent, "./checkpoints/eposiod{}_reward:{}_model.pt".format(i_episode, avg_reward))
+            torch.save(agent, "./checkpoints/eposiod{}_reward:{}_model.pt".format(i_episode, avg_reward))
 
             writer.add_scalar('avg_reward/test', avg_reward, i_episode)
             print("----------------------------------------")

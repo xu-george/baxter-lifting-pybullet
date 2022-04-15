@@ -143,6 +143,8 @@ class BaxterGymEnv(gym.Env):
         p.changeDynamics(self.baxterId, self.robot.finger_tips_b_id, lateralFriction=1, spinningFriction=0.001,
                          rollingFriction=0.0005, restitution=0)
 
+        # reset the object velocity
+        # p.resetBaseVelocity(self.blockUid, [0, 2, 0])
 
         for _ in range(int(self.control_time/self._timeStep) * 10):
             p.stepSimulation()
@@ -150,8 +152,6 @@ class BaxterGymEnv(gym.Env):
         cube_pose, _ = p.getBasePositionAndOrientation(self.blockUid)
         self.cube_init_z = cube_pose[2]
 
-        # reset the object velocity
-        # p.resetBaseVelocity(self.blockUid, [0, 2, 0])
 
 
         if self._pygame_render:

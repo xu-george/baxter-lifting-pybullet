@@ -1112,7 +1112,7 @@
     <visual>
       <origin rpy="0 0 3.141592653589793" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/basic_soft_tip.DAE"/>
+        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/paddle_tip.DAE"/>
       </geometry>
       <material name="darkgray">
         <color rgba=".2 .2 .2 1"/>
@@ -1121,7 +1121,7 @@
     <collision>
       <origin rpy="0 0 3.141592653589793" xyz="0 -0.0045 -0.015"/>
       <geometry>
-        <box size="0.016 0.007 0.037"/>
+        <box size="0.042 0.0065 0.037"/>
       </geometry>
     </collision>
     <inertial>
@@ -1171,7 +1171,7 @@
     <visual>
       <origin rpy="0 0 0.0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/basic_soft_tip.DAE"/>
+        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/paddle_tip.DAE"/>
       </geometry>
       <material name="darkgray">
         <color rgba=".2 .2 .2 1"/>
@@ -1180,7 +1180,7 @@
     <collision>
       <origin rpy="0 0 0.0" xyz="0 0.0045 -0.015"/>
       <geometry>
-        <box size="0.016 0.007 0.037"/>
+        <box size="0.042 0.0065 0.037"/>
       </geometry>
     </collision>
     <inertial>
@@ -1319,7 +1319,7 @@
     <visual>
       <origin rpy="0 0 3.141592653589793" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/basic_soft_tip.DAE"/>
+        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/paddle_tip.DAE"/>
       </geometry>
       <material name="darkgray">
         <color rgba=".2 .2 .2 1"/>
@@ -1328,7 +1328,7 @@
     <collision>
       <origin rpy="0 0 3.141592653589793" xyz="0 -0.0045 -0.015"/>
       <geometry>
-        <box size="0.016 0.007 0.037"/>
+        <box size="0.042 0.0065 0.037"/>
       </geometry>
     </collision>
     <inertial>
@@ -1378,7 +1378,7 @@
     <visual>
       <origin rpy="0 0 0.0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/basic_soft_tip.DAE"/>
+        <mesh filename="package://rethink_ee_description/meshes/electric_gripper/fingers/paddle_tip.DAE"/>
       </geometry>
       <material name="darkgray">
         <color rgba=".2 .2 .2 1"/>
@@ -1387,7 +1387,7 @@
     <collision>
       <origin rpy="0 0 0.0" xyz="0 0.0045 -0.015"/>
       <geometry>
-        <box size="0.016 0.007 0.037"/>
+        <box size="0.042 0.0065 0.037"/>
       </geometry>
     </collision>
     <inertial>

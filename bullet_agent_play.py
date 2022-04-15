@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 from replay_memory import ReplayMemory
 
 from baxter_bullet_env.baxter_gym import BaxterGymEnv
-
+from util import FrameStack
 
 def parse_args():
     parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
@@ -27,14 +27,14 @@ if __name__ == "__main__":
         args.__dict__["seed"] = np.random.randint(1, 10000)
 
     # using dense reward, and physic state to train
-    env = BaxterGymEnv(renders=True, camera_view=False,
-                       pygame_renders=False, max_episode_steps=args.epoch_step)
+    env = FrameStack(BaxterGymEnv(renders=True, camera_view=False,
+                                  pygame_renders=False, max_episode_steps=args.epoch_step), 3)
     env.seed(args.seed)
     env.action_space.seed(args.seed)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
 
-    agent = torch.load("./checkpoints/eposiod9900_reward:134.75771245244255_model.pt")
+    agent = torch.load("./checkpoints/eposiod3860_reward:152.02979023757456_model.pt")
 
     episodes = 20
 

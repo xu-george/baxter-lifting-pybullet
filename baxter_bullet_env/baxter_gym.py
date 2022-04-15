@@ -127,7 +127,7 @@ class BaxterGymEnv(gym.Env):
         # reset the robot and block
         self.robot = BaxterLeft(self.baxterId)
 
-        obj_pose = list(map(operator.add, [0.35, 0.2, -0.1], [random.random() * 0.2, random.random() * 0.2, 0]))
+        obj_pose = list(map(operator.add, [0.35, 0.2, -0.15], [random.random() * 0.2, random.random() * 0.2, 0]))
 
         ang = np.pi * random.random()
         obj_orn = list(p.getQuaternionFromEuler([0, 0, ang]))
@@ -149,6 +149,10 @@ class BaxterGymEnv(gym.Env):
 
         cube_pose, _ = p.getBasePositionAndOrientation(self.blockUid)
         self.cube_init_z = cube_pose[2]
+
+        # reset the object velocity
+        # p.resetBaseVelocity(self.blockUid, [0, 2, 0])
+
 
         if self._pygame_render:
             pygame.init()
@@ -216,23 +220,22 @@ class BaxterGymEnv(gym.Env):
         # get physic state
         """
         The physic state contain:
-        1. joint cos ().  3.end_effector pose, orientation.
-        4. normalized gripper_state. 5.gripper to cube. 6. cube position.
-        7. cube orientation
+        1. joint cos ().  3.end_effector pose
+        4. normalized gripper_state. 5.gripper to cube.
         """
         motor_id = self.robot.motorIndices[-9:]
         joint_states = p.getJointStates(self.baxterId, motor_id)
         joint_cos_p = [np.cos(x[0]) for x in joint_states[:-2]]
         # joint_cos_v = [np.cos(x[1]) for x in joint_states[:-2]]
         end_effector_p = list(p.getLinkState(self.robot.baxterId, self.robot.endEffector_id, computeLinkVelocity=True)[4])
-        end_effector_v = list(p.getLinkState(self.robot.baxterId, self.robot.endEffector_id, computeLinkVelocity=True)[6])
+        # end_effector_v = list(p.getLinkState(self.robot.baxterId, self.robot.endEffector_id, computeLinkVelocity=True)[6])
 
         cube_pose, cube_orn = p.getBasePositionAndOrientation(self.blockUid)
-        cube_v, _ = p.getBaseVelocity(self.blockUid)
+        # cube_v, _ = p.getBaseVelocity(self.blockUid)
 
         # get joint state -- normalized to [0, 1]
         gripper_state = (joint_states[-1][0] / self.robot.gripper_open - 0.5) * 2
-        dist = np.linalg.norm(np.array(gripper_state) - np.array(cube_pose))
+        dist = np.linalg.norm(np.array(end_effector_p) - np.array(cube_pose))
         physic_state = np.concatenate((end_effector_p, cube_pose, [gripper_state],
                                        [dist]), axis=0)
         return physic_state
@@ -255,7 +258,7 @@ class BaxterGymEnv(gym.Env):
         # update obs
         obs = self.getObservation()
         # update termination
-        done = self._envStepCounter >= self.max_episode_steps  # or self._success()
+        done = self._envStepCounter >= self.max_episode_steps or self._success()
         # update reward
         reward = self._reward()
         # update info
@@ -268,14 +271,13 @@ class BaxterGymEnv(gym.Env):
 
     def _success(self):
         cube_pose, _ = p.getBasePositionAndOrientation(self.blockUid)
-        return cube_pose[2] - self.cube_init_z > 0.05
+        return cube_pose[2] - self.cube_init_z > 0.1
 
     def _reward(self):
         reward = 0
 
-        # lift reward
         if self._success():
-            reward = 2.25
+            reward = 20
 
         if self._reward_types == "dense":
 
@@ -289,8 +291,11 @@ class BaxterGymEnv(gym.Env):
             # grasped reward
             if self._grasped():
                 reward += 0.25
+            # lift reward
+            if cube_pose[2] - self.cube_init_z > 0.04:
+                reward += 2.25
 
-            return reward / 2.25
+            return reward / 3.5
 
     def _grasped(self):
         """

@@ -11,7 +11,6 @@ from replay_memory import ReplayMemory
 from baxter_bullet_env.baxter_gym import BaxterGymEnv
 from util import FrameStack
 
-
 def parse_args():
     parser = argparse.ArgumentParser(description='PyTorch Soft Actor-Critic Args')
     # --------------------environment ---------------------
